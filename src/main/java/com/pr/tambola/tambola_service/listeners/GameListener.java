@@ -1,6 +1,5 @@
 package com.pr.tambola.tambola_service.listeners;
 
-import java.util.concurrent.TimeUnit;
 
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIONamespace;
@@ -80,23 +79,11 @@ public class GameListener {
 			log.info("client {} sendt a message {} on chat listener in room {}",client,msg,path);
 		};
 	}
-	private void announceGameStart() {
-		try {
-		String msg = "Game is about to start in: ";
-		for(int i = 10;i>0;i--) {
-				this.broadCastMessages(Events.Server.getLabel(), msg+i);
-				Thread.sleep(1000);
-			}
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		
-	}
+	
 	private DataListener<String> onGameChatEvent(){
 		return (client,msg,ackSender)->{
-			if(msg.equals("start") && !started) {
-				announceGameStart();
-				started=true;
+			if(msg.equals("start") && !this.started) {
+				this.started=true;
 				Thread t1 = new Thread(gameHandler);
 				t1.start();
 			}

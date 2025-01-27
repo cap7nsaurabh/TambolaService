@@ -16,10 +16,22 @@ public class TambolaGameHandler implements Runnable {
 		 this.broadCaster = broadCaster;
 		 numberGenerator = new NumberGenerator();
 	 }
-	
+	 private void announceGameStart() {
+			try {
+			String msg = "Game is about to start in: ";
+			for(int i = 10;i>0;i--) {
+					broadCaster.broadCastMessage(Events.Server.getLabel(), msg+i);
+					Thread.sleep(1000);
+				}
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			
+		}
 	@Override
 	public void run() {
 		try {
+			announceGameStart();
 			while(this.curNum!=-1) {
 				Thread.sleep(this.interval*100);
 				curNum = numberGenerator.generateNumber();
