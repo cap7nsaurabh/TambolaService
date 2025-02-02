@@ -2,6 +2,7 @@ package com.pr.tambola.tambola_service.serviceimpl;
 
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.corundumstudio.socketio.SocketIOServer;
@@ -23,9 +24,13 @@ public class GameServiceImpl implements GameService{
 
 	SocketIOServer server;
 	
-	public GameServiceImpl(SocketIOServer server) {
+	GameListener listener;
+	@Autowired
+	public GameServiceImpl(SocketIOServer server,GameListener listener) {
 		this.server = server;
+		this.listener = listener;
 	}
+	
 	
 	@Override
 	public GameCreationResponse createGame(GameCreationRequest request) {
@@ -50,9 +55,10 @@ public class GameServiceImpl implements GameService{
 	}
 	private void createGameHandler(String id,GameCreationParameters parameter) {
 		String gameEndpoint = ServiceConstants.GAME_ENDPOINT_PREFIX+id;
-		server.addNamespace(ServiceConstants.GAME_ENDPOINT_PREFIX+id);
-		@SuppressWarnings("unused")
-		GameListener gameListener = new GameListener(server, gameEndpoint,parameter);
+		
+		listener.setParameter(parameter);
+		listener.setPath(gameEndpoint);
+		listener.initialiseNameSpace();
 	}
 
 }

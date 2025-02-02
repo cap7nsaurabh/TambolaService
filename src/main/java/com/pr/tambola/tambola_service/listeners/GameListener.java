@@ -1,6 +1,13 @@
 package com.pr.tambola.tambola_service.listeners;
 
 
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+import org.springframework.web.context.annotation.RequestScope;
+
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIONamespace;
 import com.corundumstudio.socketio.SocketIOServer;
@@ -16,8 +23,10 @@ import com.pr.tambola.tambola_service.socketHelper.NameSpaceBroadCaster;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Component
+@RequestScope
 public class GameListener {
-
+	
 	SocketIOServer server;
 	SocketIONamespace namespace;
 	private String path;
@@ -27,16 +36,24 @@ public class GameListener {
 	SocketIOClient host;
 	
 	
-	
-	public GameListener(SocketIOServer server,String path, GameCreationParameters parameter){
-		this.path = path;
+	public GameListener(SocketIOServer server,TambolaGameHandler gameHandler){
 		this.server = server;
-		this.parameter = parameter;
 		this.started = false;
-		initialiseNameSpace(path);
 	}
-	private void initialiseNameSpace(String path) {
-		this.namespace = server.addNamespace(path);
+	
+	public void setPath(String path) {
+		this.path = path;
+	}
+	
+	public void setParameter(GameCreationParameters parameter) {
+		this.parameter = parameter;
+	}
+	
+	
+	
+	public void initialiseNameSpace() {
+		log.info("Path:{}",path);
+		this.namespace = server.addNamespace(this.path);
 		INameSpaceBroadCaster broadCaster = new NameSpaceBroadCaster(this.namespace);
 		gameHandler = new TambolaGameHandler(Integer.parseInt(this.parameter.getTimer()), broadCaster);
 		this.namespace.addConnectListener(onConnectListener());
@@ -52,7 +69,7 @@ public class GameListener {
 	
 	private DataListener<String> onServerChatEvent() {
 		return (client,msg,ackSender)->{
-			log.info("client {} sendt a message {} on chat listener in room {}",client,msg,path);
+			log.info("client {} sendt a message {} on chat listener in room {}",client,msg,this.path);
 		};
 	}
 	private ConnectListener onConnectListener() {
