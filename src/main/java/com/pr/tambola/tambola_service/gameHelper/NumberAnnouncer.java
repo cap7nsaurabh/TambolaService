@@ -5,13 +5,13 @@ package com.pr.tambola.tambola_service.gameHelper;
 import com.pr.tambola.tambola_service.listeners.ListenerConstants.Events;
 import com.pr.tambola.tambola_service.socketHelper.INameSpaceBroadCaster;
 
-public class TambolaGameHandler implements Runnable {
+public class NumberAnnouncer implements Runnable {
 	
 	int curNum;
 	int interval;
 	NumberGenerator numberGenerator;
 	INameSpaceBroadCaster broadCaster;
-	 public TambolaGameHandler(int interval,INameSpaceBroadCaster broadCaster) {
+	 public NumberAnnouncer(int interval,INameSpaceBroadCaster broadCaster) {
 		 this.interval = interval;
 		 this.broadCaster = broadCaster;
 		 numberGenerator = new NumberGenerator();

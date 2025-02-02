@@ -2,13 +2,12 @@ package com.pr.tambola.tambola_service.serviceimpl;
 
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.corundumstudio.socketio.SocketIOServer;
 import com.pr.tambola.tambola_service.constants.ServiceConstants;
 import com.pr.tambola.tambola_service.constants.ServiceConstants.ErrCodes;
-import com.pr.tambola.tambola_service.listeners.GameListener;
+import com.pr.tambola.tambola_service.listeners.GameHandler;
 import com.pr.tambola.tambola_service.model.ErrorDetails;
 import com.pr.tambola.tambola_service.model.gameservicemodel.GameCreationParameters;
 import com.pr.tambola.tambola_service.model.gameservicemodel.GameCreationRequest;
@@ -24,11 +23,10 @@ public class GameServiceImpl implements GameService{
 
 	SocketIOServer server;
 	
-	GameListener listener;
-	@Autowired
-	public GameServiceImpl(SocketIOServer server,GameListener listener) {
+	GameHandler handler;
+	public GameServiceImpl(SocketIOServer server,GameHandler handler) {
 		this.server = server;
-		this.listener = listener;
+		this.handler = handler;
 	}
 	
 	
@@ -56,9 +54,9 @@ public class GameServiceImpl implements GameService{
 	private void createGameHandler(String id,GameCreationParameters parameter) {
 		String gameEndpoint = ServiceConstants.GAME_ENDPOINT_PREFIX+id;
 		
-		listener.setParameter(parameter);
-		listener.setPath(gameEndpoint);
-		listener.initialiseNameSpace();
+		handler.setParameter(parameter);
+		handler.setPath(gameEndpoint);
+		handler.initialiseNameSpace();
 	}
 
 }
